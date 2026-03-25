@@ -1,9 +1,26 @@
+import { useT } from '../../i18n/LanguageContext';
 import SectionCard from '../layout/SectionCard';
+
+const WEIGHT_KEYS = [
+  'simplicity', 'fiscalClarity', 'upfrontCost', 'bankability',
+  'executionSpeed', 'documentationBurden', 'familyControl', 'flexibility',
+];
+
+const DIM_I18N = {
+  simplicity:          'dim.simplicity',
+  fiscalClarity:       'dim.fiscal',
+  upfrontCost:         'dim.cost',
+  bankability:         'dim.bank',
+  executionSpeed:      'dim.speed',
+  documentationBurden: 'dim.docs',
+  familyControl:       'dim.family',
+  flexibility:         'dim.flex',
+};
 
 function Field({ label, hint, children }) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-slate-600">{label}</label>
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs font-medium text-slate-600 uppercase tracking-wide">{label}</label>
       {hint && <p className="text-xs text-slate-400">{hint}</p>}
       {children}
     </div>
@@ -20,123 +37,109 @@ function NumInput({ value, onChange, prefix, suffix, step = 1, min = 0 }) {
         step={step}
         min={min}
         onChange={e => onChange(Number(e.target.value))}
-        className="border border-slate-200 rounded px-2 py-1 text-sm w-28 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
       />
       {suffix && <span className="text-sm text-slate-400">{suffix}</span>}
     </div>
   );
 }
 
+function SelectInput({ value, onChange, children }) {
+  return (
+    <select
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+    >
+      {children}
+    </select>
+  );
+}
+
 export default function Assumptions({ assumptions, onUpdate }) {
-  function set(key, value) {
-    onUpdate({ ...assumptions, [key]: value });
-  }
+  const { t } = useT();
+
+  function set(key, value) { onUpdate({ ...assumptions, [key]: value }); }
   function setOwnership(who, value) {
-    const other = who === 'you' ? assumptions.ownership.mother : assumptions.ownership.you;
-    onUpdate({
-      ...assumptions,
-      ownership: { ...assumptions.ownership, [who]: value },
-    });
+    onUpdate({ ...assumptions, ownership: { ...assumptions.ownership, [who]: value } });
   }
   function setWeight(key, value) {
-    onUpdate({
-      ...assumptions,
-      scoringWeights: { ...assumptions.scoringWeights, [key]: value },
-    });
+    onUpdate({ ...assumptions, scoringWeights: { ...assumptions.scoringWeights, [key]: value } });
   }
-
-  const WEIGHT_LABELS = {
-    simplicity:          'Simplicité',
-    fiscalClarity:       'Clarté fiscale',
-    upfrontCost:         'Coût initial',
-    bankability:         'Bankabilité',
-    executionSpeed:      'Rapidité d\'exécution',
-    documentationBurden: 'Charge documentaire',
-    familyControl:       'Contrôle familial',
-    flexibility:         'Flexibilité long terme',
-  };
 
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
-        {/* Property & Financing */}
-        <SectionCard title="Bien & financement">
-          <div className="space-y-4">
-            <Field label="Valeur du bien (€)">
+        {/* Property & financing */}
+        <SectionCard title={t('assum.prop.title')}>
+          <div className="space-y-5">
+            <Field label={t('assum.prop.value')}>
               <NumInput value={assumptions.propertyValue} prefix="€" step={1000}
                 onChange={v => set('propertyValue', v)} />
             </Field>
-            <Field label="Taux de financement" hint="Taux d'intérêt annuel du crédit bancaire">
+            <Field label={t('assum.prop.rate')} hint={t('assum.prop.rate.hint')}>
               <NumInput value={assumptions.financingRate} suffix="%" step={0.1} min={0}
                 onChange={v => set('financingRate', v)} />
             </Field>
-            <Field label="Durée du crédit">
-              <NumInput value={assumptions.loanDuration} suffix="ans" step={1} min={1}
+            <Field label={t('assum.prop.duration')}>
+              <NumInput value={assumptions.loanDuration} suffix={t('shared.years')} step={1} min={1}
                 onChange={v => set('loanDuration', v)} />
             </Field>
-            <Field label="Taux rémunération CCA" hint="0% pour CCA familial standard">
+            <Field label={t('assum.prop.ccaRate')} hint={t('assum.prop.ccaRate.hint')}>
               <NumInput value={assumptions.ccaInterestRate} suffix="%" step={0.1} min={0}
                 onChange={v => set('ccaInterestRate', v)} />
             </Field>
           </div>
         </SectionCard>
 
-        {/* Costs & Taxes */}
-        <SectionCard title="Coûts & fiscalité">
-          <div className="space-y-4">
-            <Field label="Frais notariaux" hint="% du montant de transaction">
+        {/* Costs & tax */}
+        <SectionCard title={t('assum.costs.title')}>
+          <div className="space-y-5">
+            <Field label={t('assum.costs.notary')} hint={t('assum.costs.notary.hint')}>
               <NumInput value={assumptions.notarialCostRate} suffix="%" step={0.1} min={0}
                 onChange={v => set('notarialCostRate', v)} />
             </Field>
-            <Field label="Droits d'enregistrement (cession)" hint="% — applicable si cession de parts">
+            <Field label={t('assum.costs.reg')} hint={t('assum.costs.reg.hint')}>
               <NumInput value={assumptions.registrationCostRate} suffix="%" step={0.1} min={0}
                 onChange={v => set('registrationCostRate', v)} />
             </Field>
-            <Field label="Régime fiscal SCI">
-              <select
-                value={assumptions.sciTaxRegime}
-                onChange={e => set('sciTaxRegime', e.target.value)}
-                className="border border-slate-200 rounded px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-              >
-                <option value="IS">SCI soumise à l'IS</option>
-                <option value="IR">SCI soumise à l'IR</option>
-              </select>
+            <Field label={t('assum.costs.tax')}>
+              <SelectInput value={assumptions.sciTaxRegime} onChange={v => set('sciTaxRegime', v)}>
+                <option value="IS">{t('assum.costs.tax.is')}</option>
+                <option value="IR">{t('assum.costs.tax.ir')}</option>
+              </SelectInput>
             </Field>
           </div>
         </SectionCard>
 
-        {/* Ownership & Lender */}
-        <SectionCard title="Ownership actuelle & profil prêteur">
-          <div className="space-y-4">
-            <Field label="Part actuelle — Vous (%)">
+        {/* Ownership & lender */}
+        <SectionCard title={t('assum.own.title')}>
+          <div className="space-y-5">
+            <Field label={t('assum.own.you')}>
               <NumInput value={assumptions.ownership.you} suffix="%" step={0.01} min={0}
                 onChange={v => setOwnership('you', v)} />
             </Field>
-            <Field label="Part actuelle — Mère (%)">
+            <Field label={t('assum.own.mother')}>
               <NumInput value={assumptions.ownership.mother} suffix="%" step={0.01} min={0}
                 onChange={v => setOwnership('mother', v)} />
             </Field>
-            <Field label="Profil prêteur" hint="Sensibilité du prêteur aux profils complexes">
-              <select
-                value={assumptions.lenderProfile}
-                onChange={e => set('lenderProfile', e.target.value)}
-                className="border border-slate-200 rounded px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-              >
-                <option value="standard">Standard</option>
-                <option value="non-resident-sensitive">Sensible non-résident</option>
-                <option value="conservative">Conservateur</option>
-              </select>
+            <Field label={t('assum.own.lender')} hint={t('assum.own.lender.hint')}>
+              <SelectInput value={assumptions.lenderProfile} onChange={v => set('lenderProfile', v)}>
+                <option value="standard">{t('assum.own.lender.std')}</option>
+                <option value="non-resident-sensitive">{t('assum.own.lender.nres')}</option>
+                <option value="conservative">{t('assum.own.lender.cons')}</option>
+              </SelectInput>
             </Field>
           </div>
         </SectionCard>
       </div>
 
-      {/* Scoring Weights */}
-      <SectionCard title="Pondérations des scores" subtitle="Ajustez l'importance relative de chaque dimension (0.5 – 2.0)">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {Object.entries(WEIGHT_LABELS).map(([key, label]) => (
-            <Field key={key} label={label}>
+      {/* Scoring weights */}
+      <SectionCard title={t('assum.weights.title')} subtitle={t('assum.weights.subtitle')}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          {WEIGHT_KEYS.map(key => (
+            <Field key={key} label={t(DIM_I18N[key])}>
               <NumInput
                 value={assumptions.scoringWeights[key]}
                 step={0.1} min={0.1}
@@ -147,9 +150,7 @@ export default function Assumptions({ assumptions, onUpdate }) {
         </div>
       </SectionCard>
 
-      <p className="text-xs text-slate-400">
-        Les modifications d'hypothèses se propagent en temps réel à tous les scénarios.
-      </p>
+      <p className="text-xs text-slate-400 text-center">{t('assum.footer')}</p>
     </div>
   );
 }
