@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useT } from '../../i18n/LanguageContext';
 import SectionCard from '../layout/SectionCard';
 import { DOCUMENT_STATUSES } from '../../data/documents';
@@ -28,6 +28,65 @@ const TH = ({ children }) => (
     {children}
   </th>
 );
+
+function FileCell({ file, docId, onUpdateDocument, t }) {
+  const inputRef = useRef(null);
+  const [dragging, setDragging] = useState(false);
+
+  function handleFile(f) {
+    if (!f) return;
+    onUpdateDocument(docId, { file: f });
+  }
+
+  function onDrop(e) {
+    e.preventDefault();
+    setDragging(false);
+    const f = e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  }
+
+  if (file) {
+    const kb = (file.size / 1024).toFixed(0);
+    return (
+      <div className="flex items-center gap-1.5">
+        <span className="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded font-medium truncate max-w-[120px]" title={file.name}>
+          {file.name}
+        </span>
+        <span className="text-[10px] text-slate-400">{kb} KB</span>
+        <button
+          onClick={() => onUpdateDocument(docId, { file: null })}
+          className="text-[10px] text-slate-400 hover:text-red-500 transition-colors ml-0.5"
+          title={t('docs.file.remove')}
+        >
+          ✕
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      onDragOver={e => { e.preventDefault(); setDragging(true); }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={onDrop}
+      onClick={() => inputRef.current?.click()}
+      className={`cursor-pointer text-[10px] px-2 py-1 rounded border border-dashed transition-colors select-none ${
+        dragging
+          ? 'border-blue-400 bg-blue-50 text-blue-600'
+          : 'border-slate-200 text-slate-400 hover:border-blue-300 hover:text-blue-500'
+      }`}
+    >
+      {dragging ? t('docs.file.drop') : t('docs.file.upload')}
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".zip,application/zip,application/x-zip-compressed"
+        className="hidden"
+        onChange={e => handleFile(e.target.files[0])}
+      />
+    </div>
+  );
+}
 
 export default function Documents({ scenarios, documents, onUpdateDocument }) {
   const { t, lang, tf } = useT();
@@ -104,6 +163,7 @@ export default function Documents({ scenarios, documents, onUpdateDocument }) {
                 <TH>{t('docs.col.critical')}</TH>
                 <TH>{t('docs.col.scenarios')}</TH>
                 <TH>{t('docs.col.notes')}</TH>
+                <TH>{t('docs.col.file')}</TH>
               </tr>
             </thead>
             <tbody>
@@ -155,6 +215,14 @@ export default function Documents({ scenarios, documents, onUpdateDocument }) {
                         onChange={e => onUpdateDocument(doc.id, { notes: e.target.value })}
                         className="w-full bg-transparent text-xs focus:outline-none focus:bg-white focus:border focus:border-slate-200 focus:rounded-lg px-2 py-1 transition"
                         placeholder={t('docs.notes.placeholder')}
+                      />
+                    </td>
+                    <td className="py-3 px-3">
+                      <FileCell
+                        file={doc.file ?? null}
+                        docId={doc.id}
+                        onUpdateDocument={onUpdateDocument}
+                        t={t}
                       />
                     </td>
                   </tr>

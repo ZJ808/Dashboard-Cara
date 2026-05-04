@@ -124,6 +124,10 @@ export const translations = {
     'docs.crit.bank':       '🏦 Banque',
     'docs.crit.notary':     '⚖️ Notaire',
     'docs.crit.both':       '🏦 + ⚖️',
+    'docs.col.file':        'Fichier',
+    'docs.file.upload':     'Joindre ZIP',
+    'docs.file.remove':     'Retirer',
+    'docs.file.drop':       'Déposer un fichier ZIP',
 
     // ── Assumptions ──────────────────────────────────────────────────
     'assum.prop.title':      'Bien & financement',
@@ -294,6 +298,10 @@ export const translations = {
     'docs.crit.bank':       '🏦 Bank',
     'docs.crit.notary':     '⚖️ Notary',
     'docs.crit.both':       '🏦 + ⚖️',
+    'docs.col.file':        'File',
+    'docs.file.upload':     'Attach ZIP',
+    'docs.file.remove':     'Remove',
+    'docs.file.drop':       'Drop a ZIP file here',
 
     // ── Assumptions ──────────────────────────────────────────────────
     'assum.prop.title':      'Property & financing',
