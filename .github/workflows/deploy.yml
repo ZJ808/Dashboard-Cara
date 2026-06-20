@@ -3,7 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - claude/create-decision-dashboard-F07k2
+      - claude/yankee-stadium-3d-explorer-piy6a1
+  workflow_dispatch:
 
 permissions:
   contents: read
