@@ -34,7 +34,10 @@ export default function DetailPanel({ stand, route, onClose }) {
         </span>
         <h2 className="mt-2 text-xl font-bold text-white">{stand.name}</h2>
         <p className="mt-1 text-sm text-slate-300">{stand.blurb}</p>
-        <p className="mt-1 text-xs text-slate-400">📍 {LEVEL_LABELS[stand.level]}</p>
+        <p className="mt-1 text-xs text-slate-400">
+          📍 {LEVEL_LABELS[stand.level]}
+          {stand.section ? ` · Section ${stand.section}` : ''}
+        </p>
       </div>
 
       {/* Route */}

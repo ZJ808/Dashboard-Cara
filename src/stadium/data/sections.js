@@ -1,28 +1,43 @@
-// Representative seating sections a visitor can choose as a starting point.
-// `angle` is degrees clockwise from home plate (0); `level` keys into the
-// geometry tables in lib/geo.js. This is a curated subset of the bowl, not the
-// full section list, chosen to span every level and field position.
+// Selectable seating sections used as a walking-route starting point.
+//
+// These are real Yankee Stadium sections; angles are derived from the 100/200/
+// 300-level numbering via sectionAngle() (sections increase clockwise from home
+// plate). A curated subset spanning every level and field position — not the
+// full section list.
+
+import { sectionAngle } from '../lib/geo';
+
+function sec(num, level, area) {
+  return {
+    id: `sec-${level}-${num}`,
+    name: `Section ${num}`,
+    num,
+    level,
+    area,
+    angle: sectionAngle(level, num),
+  };
+}
 
 export const SECTIONS = [
   // ── Field Level (100s) ────────────────────────────────────────────
-  { id: 'sec-015', name: 'Section 15', level: 'field', angle: 5, area: 'Home plate' },
-  { id: 'sec-020', name: 'Section 20', level: 'field', angle: 45, area: 'Behind 1st base' },
-  { id: 'sec-027', name: 'Section 27', level: 'field', angle: 80, area: 'Right field line' },
-  { id: 'sec-110', name: 'Section 110', level: 'field', angle: 315, area: 'Behind 3rd base' },
-  { id: 'sec-105', name: 'Section 105', level: 'field', angle: 285, area: 'Left field line' },
+  sec(120, 'field', 'Behind home plate'),
+  sec(124, 'field', '1st base side'),
+  sec(132, 'field', 'Right field corner'),
+  sec(112, 'field', '3rd base side'),
+  sec(105, 'field', 'Left field corner'),
 
   // ── Main Level (200s) ─────────────────────────────────────────────
-  { id: 'sec-214b', name: 'Section 214B', level: 'main', angle: 0, area: 'Home plate' },
-  { id: 'sec-220', name: 'Section 220', level: 'main', angle: 55, area: '1st base side' },
-  { id: 'sec-228', name: 'Section 228', level: 'main', angle: 110, area: 'Right field' },
-  { id: 'sec-234', name: 'Section 234', level: 'main', angle: 300, area: '3rd base side' },
+  sec(214, 'main', 'Behind home plate'),
+  sec(220, 'main', '1st base side'),
+  sec(228, 'main', 'Right field'),
+  sec(209, 'main', '3rd base side'),
 
   // ── Terrace / Grandstand (300s) ───────────────────────────────────
-  { id: 'sec-320', name: 'Section 320', level: 'terrace', angle: 30, area: '1st base side' },
-  { id: 'sec-314', name: 'Section 314', level: 'terrace', angle: 0, area: 'Home plate' },
-  { id: 'sec-409', name: 'Section 409', level: 'terrace', angle: 320, area: '3rd base side' },
+  sec(320, 'terrace', 'Behind home plate'),
+  sec(326, 'terrace', '1st base side'),
+  sec(309, 'terrace', '3rd base side'),
 
-  // ── Bleachers ─────────────────────────────────────────────────────
-  { id: 'sec-201bl', name: 'Bleachers 201', level: 'bleacher', angle: 150, area: 'Right-center field' },
-  { id: 'sec-239bl', name: 'Bleachers 239', level: 'bleacher', angle: 210, area: 'Left-center field' },
+  // ── Bleachers (outfield) ──────────────────────────────────────────
+  { id: 'sec-bleacher-rf', name: 'RF Bleachers', num: 203, level: 'bleacher', area: 'Right-center field', angle: 150 },
+  { id: 'sec-bleacher-lf', name: 'LF Bleachers', num: 237, level: 'bleacher', area: 'Left-center field', angle: 215 },
 ];

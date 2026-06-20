@@ -47,6 +47,18 @@ export function polarToVec(angleDeg, radius, height = 0) {
   return [radius * Math.sin(a), height, -radius * Math.cos(a)];
 }
 
+// Map a real Yankee Stadium section number to an angle (degrees clockwise from
+// home plate) on the polar model. Sections increase clockwise; each level's
+// "behind home plate" anchor differs (≈120 field, ≈214 main, ≈320 terrace),
+// and adjacent sections are ~4.5° apart. Approximate but consistent.
+const LEVEL_HOME_SECTION = { field: 120, main: 214, terrace: 320, bleacher: 220 };
+const DEG_PER_SECTION = 4.5;
+
+export function sectionAngle(level, num) {
+  const home = LEVEL_HOME_SECTION[level] ?? 120;
+  return (((num - home) * DEG_PER_SECTION) % 360 + 360) % 360;
+}
+
 // 3D scene position of a stand on its concourse ring, pushed slightly outward
 // so the pin reads clearly against the seating bowl.
 export function standPosition(stand) {

@@ -21,6 +21,7 @@ export const GATES = [
 
 // Disclaimer surfaced in the UI so the data isn't mistaken for live/official.
 export const DATA_NOTE =
-  'Concession locations, menus and prices are illustrative samples for ' +
-  'demonstration and may not match current in-stadium offerings. Distances ' +
-  'and walking times are estimates.';
+  'Stand names, sections and menu items are based on the Yankees / Legends ' +
+  '2024–2025 dining announcements; prices are estimates (the Yankees do not ' +
+  'publish concession prices). The 3D model is a stylized rendering and ' +
+  'distances/walking times are approximate.';

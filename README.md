@@ -31,10 +31,22 @@ location** or a **specific seating section**.
 
 Walking times use ~1.4 m/s outdoors and ~1.15 m/s on crowded concourses.
 
-> **Note:** Concession locations, menus and prices are *illustrative samples*
-> for demonstration and may not match current in-stadium offerings. The 3D model
-> is a recognizable stylization, not a survey-accurate reproduction. Distances
-> and times are estimates.
+## Data sources
+
+Stand names, section numbers, levels and menu items are based on the Yankees /
+Legends Hospitality **2024–2025 dining announcements** and public stadium/seating
+guides:
+
+- New York Yankees & Legends Hospitality 2025 dining menu announcement (YES Network / MLB press release)
+- "Game Day Eats: New 2025 Offerings at Yankee Stadium" — The Lexington Line
+- "Your Guide to What's New and What to Eat at Yankee Stadium in 2024" — MTA Away
+- Yankee Stadium seating guides (RateYourSeats, MLB.com) for 100/200/300-level
+  section numbering used to place stands on the model
+
+> **Note:** The Yankees do **not** publish concession prices, so all prices are
+> realistic **estimates**. The 3D model is a recognizable stylization, not a
+> survey-accurate reproduction, and section→position mapping is approximate.
+> Distances and walking times are estimates.
 
 ## Tech stack
 
